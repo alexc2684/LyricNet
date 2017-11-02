@@ -29,7 +29,7 @@ headers = {"Authorization": "Bearer " + CLIENT_TOKEN, "User-Agent": "curl/7.9.8 
 # json_obj = json.loads(raw)
 # body = json_obj['response']['song']
 # lyrics_path = body['path']
-lyrics_url = "https://genius.com/Kendrick-lamar-love-lyrics"
+lyrics_url = "https://genius.com/Taylor-swift-wildest-dreams-lyrics"
 
 if True:
     req = requests.request(url=lyrics_url, headers=headers,method="GET")
@@ -40,7 +40,7 @@ if True:
     lyrics = lyrics.replace("\n", " ")
     lyrics = re.sub(r'\[.+?\]', "",lyrics)
     #TODO: regex to remove [Verse] etc
-    songFile = open("train/kendrick/love.txt", "w")
+    songFile = open("train/swift/wildest_dreams.txt", "w")
     songFile.write(lyrics)
     songFile.close()
 

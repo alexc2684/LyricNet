@@ -21,9 +21,10 @@ import random
 import re
 
 class SiameseLSTM(nn.Module):
-    hdim = 512
-    def __init__(self, embedding_dim, vocab_size):
+    hdim = 16
+    def __init__(self, embedding_dim, hdim, vocab_size):
         super(SiameseLSTM, self).__init__()
+        self.hdim = hdim
         self.embeddings = nn.Embedding(vocab_size, embedding_dim)
         self.lstm = nn.LSTM(embedding_dim, self.hdim, num_layers=2)#, bidirectional=True)
         self.hidden = self.initHidden(self.hdim)

@@ -74,9 +74,10 @@ loss_history = []
 avg_loss = []
 iteration = 0
 
-EDIM = 512
+EDIM = 16
+HDIM = 16
 
-model = SiameseLSTM(EDIM, len(word_to_ix))
+model = SiameseLSTM(EDIM, HDIM, len(word_to_ix))
 loss = nn.MSELoss()
 optimizer = optim.SGD(model.parameters(), lr=0.01)
 for epoch in range(5):
@@ -84,7 +85,7 @@ for epoch in range(5):
         song1, song2, label = data
         song1, song2 = prepare_sequence(song1, word_to_ix), prepare_sequence(song2, word_to_ix)
         label = Variable(torch.FloatTensor([label]))
-        model.hidden = model.initHidden(512)
+        model.hidden = model.initHidden(HDIM)
         out = model(song1, song2)
         optimizer.zero_grad()
         total_loss = loss(out, label)
@@ -100,7 +101,11 @@ for epoch in range(5):
             save_checkpoint({
                 'state_dict': model.state_dict(),
                 'optimizer': optimizer.state_dict()
-            }, True, filename='checkpoint'+ epoch + '.pth.tar')
+            }, True, filename='saved_models/checkpoint'+ str(epoch) + '.pth.tar')
+            f = open("loss/loss" + str(epoch) + ".txt", "w")
+            [f.write(str(l)) for l in avg_loss]
+            f.close()
+            break
 
 
 

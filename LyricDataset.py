@@ -1,4 +1,17 @@
 import os
+import random
+import re
+from torch.utils.data import DataLoader, Dataset
+
+def openFile(path):
+    f = open(path, "r")
+    return f.read()
+
+def convertForDict(word):
+    pattern = re.compile('[\W_]+')
+    word = pattern.sub('', word)
+    return word.lower()
+
 
 class LyricDataset(Dataset):
     def __init__(self, pathToData, numClasses, should_invert=True):

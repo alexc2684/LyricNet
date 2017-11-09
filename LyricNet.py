@@ -47,7 +47,7 @@ def save_checkpoint(state, is_best, filename='checkpoint.pth.tar'):
     if is_best:
         shutil.copyfile(filename, 'model_best.pth.tar')
 
-PATH = "/Users/alexchan/Documents/college/susa/LyricNet/train"
+PATH = "/home/ubuntu/LyricNet/train"
 dataset = LyricDataset(PATH, 2)
 
 def convertForDict(word):

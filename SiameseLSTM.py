@@ -32,8 +32,8 @@ class SiameseLSTM(nn.Module):
 
 
     def initHidden(self, dim):
-        return (autograd.Variable(torch.zeros(2, 1, dim)),
-        autograd.Variable(torch.zeros(2, 1, dim)))
+        return (autograd.Variable(torch.zeros(2, 1, dim)).cuda(),
+        autograd.Variable(torch.zeros(2, 1, dim)).cuda())
 
     def forward_once(self, lyric):
         embeds = self.embeddings(lyric).view(len(lyric), 1, -1)

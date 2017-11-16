@@ -47,7 +47,7 @@ def save_checkpoint(state, is_best, filename='checkpoint.pth.tar'):
     if is_best:
         shutil.copyfile(filename, 'model_best.pth.tar')
 
-PATH = "/home/ubuntu/LyricNet/train/taylor_swift"
+PATH = "train/taylor_swift"
 dataset = LyricDataset(PATH, 2)
 
 def convertForDict(word):
@@ -64,11 +64,11 @@ word_to_ix = {}
 labels = dataset.data
 for artist in labels:
     for song in os.listdir(dataset.pathToData + "/" + artist):
-    	if song != ".DS_Store":
+        if song != ".DS_Store":
             for word in openFile(dataset.pathToData + "/" + artist + "/" + song).split(" "):
- 	        word = convertForDict(word)
-        	if word not in word_to_ix:
-               	    word_to_ix[word] = len(word_to_ix)
+                word = convertForDict(word)
+                if word not in word_to_ix:
+                    word_to_ix[word] = len(word_to_ix)
 
 counter = []
 loss_history = []

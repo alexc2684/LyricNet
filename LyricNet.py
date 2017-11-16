@@ -55,13 +55,22 @@ def convertForDict(word):
     word = pattern.sub('', word)
     return word.lower()
 
-def prepare_sequence(seq, to_ix):
-    idxs = [to_ix[w] for w in seq]
+def prepare_sequence(seq, to_ix, isTest=False):
+    if isTest:
+        idxs = []
+        for w in seq:
+            try:
+                idxs.append(to_ix[w])
+            except KeyError:
+                idxs.append(to_ix['_UNK_'])
+    else:
+        idxs = [to_ix[w] for w in seq]
     tensor = torch.LongTensor(idxs)
     return autograd.Variable(tensor).cuda()
 
 word_to_ix = {}
 labels = dataset.data
+word_to_ix["_UNK_"] = len(word_to_ix)
 for artist in labels:
     for song in os.listdir(dataset.pathToData + "/" + artist):
         if song != ".DS_Store":
@@ -81,7 +90,7 @@ HDIM = 512
 model = SiameseLSTM(EDIM, HDIM, len(word_to_ix)).cuda()
 loss = nn.MSELoss().cuda()
 optimizer = optim.SGD(model.parameters(), lr=0.01)
-for epoch in range(5):
+for epoch in range(10):
     for i, data in enumerate(dataset):
         song1, song2, label = data
         song1, song2 = prepare_sequence(song1, word_to_ix), prepare_sequence(song2, word_to_ix)
@@ -100,14 +109,29 @@ for epoch in range(5):
             avg_loss.append((sum(loss_history))/len(loss_history))
         if i == 10000:
             save_checkpoint({
-                'state_dict': model.state_dict(),
-                'optimizer': optimizer.state_dict()
+               'state_dict': model.state_dict(),
+               'optimizer': optimizer.state_dict()
             }, True, filename='saved_models/checkpoint'+ str(epoch) + '.pth.tar')
             f = open("loss/loss" + str(epoch) + ".txt", "w")
             [f.write(str(l)) for l in avg_loss]
             f.close()
             break
 
-
-
+print("Training Complete")
+print("Average Loss:", avg_loss[len(avg_loss)-1])
+#
+# TEST_PATH = "test"
+# testset = LyricDataset(TEST_PATH, 2)
+#
+# for i, data in enumerate(testset,0):
+#     song1, song2, label = data
+#     song1, song2 = prepare_sequence(song1, word_to_ix, True), prepare_sequence(song2, word_to_ix, True)
+#     song1, song2 = song1.cuda(), song2.cuda()
+#     label = Variable(torch.FloatTensor([label]).cuda())
+#     model.hidden = model.initHidden(HDIM)
+#     out = model(song1, song2)
+#     print(label)
+#     print(out)
+#     if i == 0:
+#         break
 # show_plot(counter,avg_loss)

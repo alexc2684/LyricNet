@@ -58,7 +58,7 @@ def convertForDict(word):
 def prepare_sequence(seq, to_ix):
     idxs = [to_ix[w] for w in seq]
     tensor = torch.LongTensor(idxs)
-    return autograd.Variable(tensor)
+    return autograd.Variable(tensor).cuda()
 
 word_to_ix = {}
 labels = dataset.data
@@ -74,17 +74,17 @@ loss_history = []
 avg_loss = []
 iteration = 0
 
-EDIM = 16
-HDIM = 16
+EDIM = 512
+HDIM = 512
 
-model = SiameseLSTM(EDIM, HDIM, len(word_to_ix))
-loss = nn.MSELoss()
+model = SiameseLSTM(EDIM, HDIM, len(word_to_ix)).cuda()
+loss = nn.MSELoss().cuda()
 optimizer = optim.SGD(model.parameters(), lr=0.01)
 for epoch in range(5):
     for i, data in enumerate(dataset):
         song1, song2, label = data
         song1, song2 = prepare_sequence(song1, word_to_ix), prepare_sequence(song2, word_to_ix)
-        label = Variable(torch.FloatTensor([label]))
+        label = Variable(torch.FloatTensor([label])).cuda()
         model.hidden = model.initHidden(HDIM)
         out = model(song1, song2)
         optimizer.zero_grad()

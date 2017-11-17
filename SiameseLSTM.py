@@ -48,4 +48,4 @@ class SiameseLSTM(nn.Module):
         out1 = output1[len(output1)-1]
         out2 = output2[len(output2)-1]
 #         return F.softmax(-torch.abs(out1-out2))
-        return torch.abs(out1 - out2)
+        return nn.CosineSimilarity(out1, out2)

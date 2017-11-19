@@ -89,7 +89,7 @@ HDIM = 512
 
 model = SiameseLSTM(EDIM, HDIM, len(word_to_ix)).cuda()
 loss = nn.MSELoss().cuda()
-optimizer = optim.SGD(model.parameters(), lr=0.01)
+optimizer = optim.Adadelta(model.parameters())
 for epoch in range(10):
     for i, data in enumerate(dataset):
         song1, song2, label = data
